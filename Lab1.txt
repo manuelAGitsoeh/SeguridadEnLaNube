@@ -1,0 +1,731 @@
+###############################################################
+#                          WARNING!!!!                        #
+# This is a sandbox environment. Using personal credentials   #
+# is HIGHLY! discouraged. Any consequences of doing so are    #
+# completely the user's responsibilites.                      #
+#                                                             #
+# The PWD team.                                               #
+###############################################################
+[node1] (local) root@192.168.0.8 ~
+$ docker info
+Client:
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  app: Docker App (Docker Inc., v0.9.1-beta3)
+
+Server:
+ Containers: 0
+  Running: 0
+  Paused: 0
+  Stopped: 0                                                      Images: 0                                                      Server Version: 20.10.0                          Storage Driver: overlay2
+  Backing Filesystem: xfs
+  Supports d_type: true
+  Native Overlay Diff: true
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: 1
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
+ Swarm: inactive
+ Runtimes: io.containerd.runtime.v1.linux runc io.containerd.runc.v2
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 269548fa27e0089a8b8278fc4fc781d7f65a939b
+ runc version: ff819c7e9184c13b7c2607fe6c30ae19403a7aff
+ init version: de40ad0
+ Security Options:
+  apparmor
+  seccomp
+   Profile: default
+ Kernel Version: 4.4.0-210-generic
+ Operating System: Alpine Linux v3.12 (containerized)
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 8
+ Total Memory: 31.42GiB
+ Name: node1
+ ID: NRWM:Z2OO:6HLP:ZDIS:POQ7:UEUE:PZQV:A7C2:LSL6:V7LH:W3JK:ZEA4
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: true
+  File Descriptors: 24
+  Goroutines: 42
+  System Time: 2022-02-09T00:35:50.085732864Z
+  EventsListeners: 0
+ Registry: https://index.docker.io/v1/
+ Labels:
+ Experimental: true
+ Insecure Registries:
+  127.0.0.1
+  127.0.0.0/8
+ Live Restore Enabled: false
+ Product License: Community Engine
+
+WARNING: API is accessible on http://0.0.0.0:2375 without encryption.
+         Access to the remote API is equivalent to root access on the host. Refer
+         to the 'Docker daemon attack surface' section in the documentation for
+         more information: https://docs.docker.com/engine/security/security/#docker-daemon-attack-surface
+WARNING: No swap limit support
+WARNING: bridge-nf-call-iptables is disabled
+WARNING: bridge-nf-call-ip6tables is disabled
+[node1] (local) root@192.168.0.8 ~
+$ docker pull wordpress:4.7.2-apache
+4.7.2-apache: Pulling from library/wordpress
+693502eb7dfb: Pull complete 
+16328c296404: Pull complete 
+8b3c97761df6: Pull complete 
+5e1d4f4f29eb: Pull complete 
+530750fc5019: Pull complete 
+39e9c6c72db7: Pull complete 
+de476ce7ac87: Pull complete 
+4ad13cbbc7d8: Pull complete 
+74c28aa07dc7: Pull complete 
+a07a242e36fb: Pull complete 
+3d491d166e88: Pull complete 
+cb6c232330f0: Pull complete 
+25a48aec9dc7: Pull complete 
+836344dc17d7: Pull complete 
+f5cafd105c82: Pull complete 
+fef842449a96: Pull complete 
+9b13cded57f6: Pull complete 
+0733368296e4: Pull complete 
+Digest: sha256:498509cc3778374f65037f8dae67bb660d4fe650e8ac2129135224d5d2d81726
+Status: Downloaded newer image for wordpress:4.7.2-apache
+docker.io/library/wordpress:4.7.2-apache
+[node1] (local) root@192.168.0.8 ~
+$ docker pull mariadb:10.0.29
+10.0.29: Pulling from library/mariadb
+693502eb7dfb: Already exists 
+08d0e9d74b1b: Pull complete 
+e700ebfbe6bc: Pull complete 
+f718f1976629: Pull complete 
+b73d942a76fd: Pull complete 
+6b34f02138e1: Pull complete 
+b07f47800e46: Pull complete 
+fb3499ae0cd2: Pull complete 
+2f0dd1c7eaaa: Pull complete 
+86f4cf783ec5: Pull complete 
+1038d3131039: Pull complete 
+8fad115b69e2: Pull complete 
+Digest: sha256:46be207f2949854fd7dc1128893ec39cc230243278ebf73b923feaa71f7b3b0f
+Status: Downloaded newer image for mariadb:10.0.29
+docker.io/library/mariadb:10.0.29
+[node1] (local) root@192.168.0.8 ~
+$ docker network create --driver bridge FrontEnd
+c4bbf839b933ddf49c050bfb646da8205c1b6072b6b242d31b6bb48390a67887
+[node1] (local) root@192.168.0.8 ~
+$ docker network create --driver bridge BackEnd
+baaae2e5d88f9b3b994314159560c40feca90ae28448360a74b091b72f44489d
+[node1] (local) root@192.168.0.8 ~
+$ docker inspect FrontEnd
+[
+    {
+        "Name": "FrontEnd",
+        "Id": "c4bbf839b933ddf49c050bfb646da8205c1b6072b6b242d31b6bb48390a67887",
+        "Created": "2022-02-09T00:38:05.560489647Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.19.0.0/16",
+                    "Gateway": "172.19.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {},
+        "Labels": {}
+    }
+]
+[node1] (local) root@192.168.0.8 ~
+$ docker inspect BackEnd
+[
+    {
+        "Name": "BackEnd",
+        "Id": "baaae2e5d88f9b3b994314159560c40feca90ae28448360a74b091b72f44489d",
+        "Created": "2022-02-09T00:38:15.548090413Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.20.0.0/16",
+                    "Gateway": "172.20.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {},
+        "Labels": {}
+    }
+]
+[node1] (local) root@192.168.0.8 ~
+$ docker run --name wordpress01 -d -p 8080:80 --mount src=VL_wordpress01,dst=/var/www/html --network=FrontEnd wordpress:4.7.2-apache
+b4c103ba57a49fa68b843fa9581ca111e3c82c38e5b5f04839eceb6dc503ca33
+[node1] (local) root@192.168.0.8 ~
+$ docker run --name mariadb01 -d -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=wordpress01 -e MYSQL_USER=user -e MYSQL_PASSWORD=userP --network=BackEnd --mount src=VL_mariadb01,dst=/var/lib/mysql mariadb:10.0.29t sr                         48f52c95c7e36954d673ec00bd1a9cb37195d2483346656610fe071e309566c9
+[node1] (local) root@192.168.0.8 ~
+$ docker network connect BackEnd worpdress01Error response from daemon: No such container: worpdress01
+[node1] (local) root@192.168.0.8 ~
+$ docker ps
+CONTAINER ID   IMAGE                    COMMAND                  CREATED              STATUS              PORTS                  NAMES
+48f52c95c7e3   mariadb:10.0.29          "docker-entrypoint.s…"   About a minute ago   Up About a minute   3306/tcp               mariadb01
+b4c103ba57a4   wordpress:4.7.2-apache   "docker-entrypoint.s…"   6 minutes ago        Up 6 minutes        0.0.0.0:8080->80/tcp   wordpress01
+[node1] (local) root@192.168.0.8 ~
+$
+[node1] (local) root@192.168.0.8 ~
+$ docker network connect BackEnd wordpress01
+[node1] (local) root@192.168.0.8 ~
+$ docker inspect mariadb01
+[
+    {
+        "Id": "48f52c95c7e36954d673ec00bd1a9cb37195d2483346656610fe071e309566c9",
+        "Created": "2022-02-09T00:49:43.862978825Z",
+        "Path": "docker-entrypoint.sh",
+        "Args": [
+            "mysqld"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 7410,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2022-02-09T00:49:44.54409534Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:f674162608fe9fafdb0730dde18f7dcf3d15473fbde5f2e208f95a099abb86a2",
+        "ResolvConfPath": "/var/lib/docker/containers/48f52c95c7e36954d673ec00bd1a9cb37195d2483346656610fe071e309566c9/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/48f52c95c7e36954d673ec00bd1a9cb37195d2483346656610fe071e309566c9/hostname",
+        "HostsPath": "/var/lib/docker/containers/48f52c95c7e36954d673ec00bd1a9cb37195d2483346656610fe071e309566c9/hosts",
+        "LogPath": "/var/lib/docker/containers/48f52c95c7e36954d673ec00bd1a9cb37195d2483346656610fe071e309566c9/48f52c95c7e36954d673ec00bd1a9cb37195d2483346656610fe071e309566c9-json.log",
+        "Name": "/mariadb01",
+        "RestartCount": 0,
+        "Driver": "overlay2",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "docker-default",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "BackEnd",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "host",
+            "Dns": [],
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": null,
+            "BlkioDeviceWriteBps": null,
+            "BlkioDeviceReadIOps": null,
+            "BlkioDeviceWriteIOps": null,
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "KernelMemory": 0,
+            "KernelMemoryTCP": 0,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": false,
+            "PidsLimit": null,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "volume",
+                    "Source": "VL_mariadb01",
+                    "Target": "/var/lib/mysql"
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/asound",
+                "/proc/acpi",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/e688e2b459c1e68ef738ae3ca04752426cd17a27167a4366cac6ceb3342bf1c3-init/diff:/var/lib/docker/overlay2/e9362a690e6d51cd894789b8537d66388785d415607cd9a42b159c2328766ef4/diff:/var/lib/docker/overlay2/8aa6a27c62b9a951784feb12ddb1738de318ac1f166d3f389f67b0a5c090b7e1/diff:/var/lib/docker/overlay2/38f69c043b621c0dec0debea76c9ec520f407bbd164d33745af4cbadbe5ce6a4/diff:/var/lib/docker/overlay2/efd603d2bd7e1e73353b5892a2265927c38ec5d1efd456c2e3f48d99539ac563/diff:/var/lib/docker/overlay2/7ed91c1c33d3963b2d2eb703469b8639a3eb318e8d723ee087b04426f296e58b/diff:/var/lib/docker/overlay2/18f5757d7b3fe7d70f904073af08ad0d79e4a9be4f7cea2f841716ea40cffa00/diff:/var/lib/docker/overlay2/22cc5c23518bde3ab75b132c465f66322d1d467ed7967ab8a497785e2fd1a05a/diff:/var/lib/docker/overlay2/4e281156fdf7c8b198791ab59804ef2f3a80bc61876165954fcf5faf80769146/diff:/var/lib/docker/overlay2/42d3eb7047ea7a60a95214c6fbb2d380154525b8dd1c81cc227f0dc2651316e0/diff:/var/lib/docker/overlay2/531f20bbd6fba8b5502aecb87e415e54136f16408bf8d83e59242e2beb22839d/diff:/var/lib/docker/overlay2/526c9ee0fcbbae277fdadaeb0a1ab468bddca96876e8ed48dbc159c6233eda8d/diff:/var/lib/docker/overlay2/0ddc0ed4eb6005f3221164a0cc86729a4c6b9b398c1879dc702846fbb25e6607/diff",
+                "MergedDir": "/var/lib/docker/overlay2/e688e2b459c1e68ef738ae3ca04752426cd17a27167a4366cac6ceb3342bf1c3/merged",
+                "UpperDir": "/var/lib/docker/overlay2/e688e2b459c1e68ef738ae3ca04752426cd17a27167a4366cac6ceb3342bf1c3/diff",
+                "WorkDir": "/var/lib/docker/overlay2/e688e2b459c1e68ef738ae3ca04752426cd17a27167a4366cac6ceb3342bf1c3/work"
+            },
+            "Name": "overlay2"
+        },
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "VL_mariadb01",
+                "Source": "/var/lib/docker/volumes/VL_mariadb01/_data",
+                "Destination": "/var/lib/mysql",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+        "Config": {
+            "Hostname": "48f52c95c7e3",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "3306/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "MYSQL_PASSWORD=userP",
+                "MYSQL_ROOT_PASSWORD=root",
+                "MYSQL_DATABASE=wordpress01",
+                "MYSQL_USER=user",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GOSU_VERSION=1.7",
+                "GPG_KEYS=199369E5404BD5FC7D2FE43BCBCB082A1BB943DB \t430BDF5C56E7C94E848EE60C1C4CBDCDCD2EFD2A \t4D1BB29D63D98E422B2113B19334A25F8507EFA5",
+                "MARIADB_MAJOR=10.0",
+                "MARIADB_VERSION=10.0.29+maria-1~jessie"
+            ],
+            "Cmd": [
+                "mysqld"
+            ],
+            "Image": "mariadb:10.0.29",
+            "Volumes": {
+                "/var/lib/mysql": {}
+            },
+            "WorkingDir": "",
+            "Entrypoint": [
+                "docker-entrypoint.sh"
+            ],
+            "OnBuild": null,
+            "Labels": {}
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "e7f42cc43e0570aa545e95716425ef18b7f83e5c6188a76bbc88c1e034411bac",
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "Ports": {
+                "3306/tcp": null
+            },
+            "SandboxKey": "/var/run/docker/netns/e7f42cc43e05",
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "",
+            "Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "MacAddress": "",
+            "Networks": {
+                "BackEnd": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": [
+                        "48f52c95c7e3"
+                    ],
+                    "NetworkID": "baaae2e5d88f9b3b994314159560c40feca90ae28448360a74b091b72f44489d",
+                    "EndpointID": "57ecfc49108a12383d611d650377818eb671d794562fa3e673c0993f45618e84",
+                    "Gateway": "172.20.0.1",
+                    "IPAddress": "172.20.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:14:00:02",
+                    "DriverOpts": null
+                }
+            }
+        }
+    }
+]
+[node1] (local) root@192.168.0.8 ~
+$ docker inspect wordpress01
+[
+    {
+        "Id": "b4c103ba57a49fa68b843fa9581ca111e3c82c38e5b5f04839eceb6dc503ca33",
+        "Created": "2022-02-09T00:44:39.438220169Z",
+        "Path": "docker-entrypoint.sh",
+        "Args": [
+            "apache2-foreground"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 5046,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2022-02-09T00:44:40.190443148Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:6eaad793d5c8657e6b61cbd0651b96ac99fe1ac6697c007656be0c9de9fffd84",
+        "ResolvConfPath": "/var/lib/docker/containers/b4c103ba57a49fa68b843fa9581ca111e3c82c38e5b5f04839eceb6dc503ca33/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/b4c103ba57a49fa68b843fa9581ca111e3c82c38e5b5f04839eceb6dc503ca33/hostname",
+        "HostsPath": "/var/lib/docker/containers/b4c103ba57a49fa68b843fa9581ca111e3c82c38e5b5f04839eceb6dc503ca33/hosts",
+        "LogPath": "/var/lib/docker/containers/b4c103ba57a49fa68b843fa9581ca111e3c82c38e5b5f04839eceb6dc503ca33/b4c103ba57a49fa68b843fa9581ca111e3c82c38e5b5f04839eceb6dc503ca33-json.log",
+        "Name": "/wordpress01",
+        "RestartCount": 0,
+        "Driver": "overlay2",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "docker-default",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "FrontEnd",
+            "PortBindings": {
+                "80/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "8080"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "host",
+            "Dns": [],
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": null,
+            "BlkioDeviceWriteBps": null,
+            "BlkioDeviceReadIOps": null,
+            "BlkioDeviceWriteIOps": null,
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "KernelMemory": 0,
+            "KernelMemoryTCP": 0,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": false,
+            "PidsLimit": null,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "volume",
+                    "Source": "VL_wordpress01",
+                    "Target": "/var/www/html"
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/asound",
+                "/proc/acpi",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/ad696d9fd3bfbdb4eaeb2d8fdc7ae44e761c0cde371be94f1d8f0745f76d7f1b-init/diff:/var/lib/docker/overlay2/e8ce7262dc0f8c21f91f94f6b9b58e0b65187ab8fae9b1fdddf132d5a8c1d699/diff:/var/lib/docker/overlay2/b7cbd632752a723d05f03aac2855fdf3dc49fdc6262af4de06413192342b18a7/diff:/var/lib/docker/overlay2/ad5dbd9420f0d06fd6f87b1517eafa007f18336f57bf5851cc69113b3c227766/diff:/var/lib/docker/overlay2/f7e848d9561e1f3ba39313caeab84778533b667cc6226d6bc97626f198580be7/diff:/var/lib/docker/overlay2/242c56a8d1f2533f994b69da0057c97a2eda74f7686b1cf83bc7485b2a6d76f2/diff:/var/lib/docker/overlay2/f2a6214bec462c14191c2e1d6b85251ca7cd1149642d77e0a5ffda75664cfe8c/diff:/var/lib/docker/overlay2/b5a51680a490c622bba090fae02d4b42159ab8f79e3893cc373725721d93f711/diff:/var/lib/docker/overlay2/2279b850234d1c4ae96a5131c9be3394efc41cfd5934f0d0dec5824fadbce746/diff:/var/lib/docker/overlay2/bde5d39c69a1cc52ba28430f85917cab12bc92ae6e1fe833e0fd83d5a207a5a4/diff:/var/lib/docker/overlay2/bbba5e886ef186e2929320a1764cdc8cd5ebaad6c66fcf4034f9cc61e63af4da/diff:/var/lib/docker/overlay2/e6d2c949456f74cbfc50b73f41f3f5ac2931068805648f74ea6876a0e568a6d0/diff:/var/lib/docker/overlay2/3ef424cfc6ff544af3e6ab09fb1190001cd49e53119b9961a2462200ce5f54f0/diff:/var/lib/docker/overlay2/bfa6b02204cf981ad7b94c0866e09efeed9cff13e2b1e5cc503e8fd35fe2257a/diff:/var/lib/docker/overlay2/915cf16b60d3748fa913dd07a99a791cd362eba908a4242d0bdfbdc877365c63/diff:/var/lib/docker/overlay2/96791308cb0327499656a7ac2ccfaf8604d4f0ec8b53542ba785677f5793b034/diff:/var/lib/docker/overlay2/379c92c04f2120817347e0368274289c7d49846648f6212989ff41de46972ef2/diff:/var/lib/docker/overlay2/1e3b999f0d8e8f44d8f708b1513e7d62dce37aec40c01b31660c0a3043ac1207/diff:/var/lib/docker/overlay2/0ddc0ed4eb6005f3221164a0cc86729a4c6b9b398c1879dc702846fbb25e6607/diff",
+                "MergedDir": "/var/lib/docker/overlay2/ad696d9fd3bfbdb4eaeb2d8fdc7ae44e761c0cde371be94f1d8f0745f76d7f1b/merged",
+                "UpperDir": "/var/lib/docker/overlay2/ad696d9fd3bfbdb4eaeb2d8fdc7ae44e761c0cde371be94f1d8f0745f76d7f1b/diff",
+                "WorkDir": "/var/lib/docker/overlay2/ad696d9fd3bfbdb4eaeb2d8fdc7ae44e761c0cde371be94f1d8f0745f76d7f1b/work"
+            },
+            "Name": "overlay2"
+        },
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "VL_wordpress01",
+                "Source": "/var/lib/docker/volumes/VL_wordpress01/_data",
+                "Destination": "/var/www/html",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+        "Config": {
+            "Hostname": "b4c103ba57a4",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "80/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "PHPIZE_DEPS=autoconf \t\tfile \t\tg++ \t\tgcc \t\tlibc-dev \t\tmake \t\tpkg-config \t\tre2c",
+                "PHP_INI_DIR=/usr/local/etc/php",
+                "APACHE_CONFDIR=/etc/apache2",
+                "APACHE_ENVVARS=/etc/apache2/envvars",
+                "PHP_EXTRA_BUILD_DEPS=apache2-dev",
+                "PHP_EXTRA_CONFIGURE_ARGS=--with-apxs2",
+                "PHP_CFLAGS=-fstack-protector-strong -fpic -fpie -O2",
+                "PHP_CPPFLAGS=-fstack-protector-strong -fpic -fpie -O2",
+                "PHP_LDFLAGS=-Wl,-O1 -Wl,--hash-style=both -pie",
+                "GPG_KEYS=0BD78B5F97500D450838F95DFE857D9A90D90EC1 6E4F6AB321FDC07F2C332E3AC2BF0BC433CFC8B3",
+                "PHP_VERSION=5.6.30",
+                "PHP_URL=https://secure.php.net/get/php-5.6.30.tar.xz/from/this/mirror",
+                "PHP_ASC_URL=https://secure.php.net/get/php-5.6.30.tar.xz.asc/from/this/mirror",
+                "PHP_SHA256=a363185c786432f75e3c7ff956b49c3369c3f6906a6b10459f8d1ddc22f70805",
+                "PHP_MD5=68753955a8964ae49064c6424f81eb3e",
+                "WORDPRESS_VERSION=4.7.2",
+                "WORDPRESS_SHA1=7b687f1af589c337124e6247229af209ec1d52c3"
+            ],
+            "Cmd": [
+                "apache2-foreground"
+            ],
+            "Image": "wordpress:4.7.2-apache",
+            "Volumes": {
+                "/var/www/html": {}
+            },
+            "WorkingDir": "/var/www/html",
+            "Entrypoint": [
+                "docker-entrypoint.sh"
+            ],
+            "OnBuild": null,
+            "Labels": {}
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "cde71482b7ed913707013b770799eb0fa0ec13bebc3efd427830534aeb0a696d",
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "Ports": {
+                "80/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "8080"
+                    }
+                ]
+            },
+            "SandboxKey": "/var/run/docker/netns/cde71482b7ed",
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "",
+            "Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "MacAddress": "",
+            "Networks": {
+                "BackEnd": {
+                    "IPAMConfig": {},
+                    "Links": null,
+                    "Aliases": [
+                        "b4c103ba57a4"
+                    ],
+                    "NetworkID": "baaae2e5d88f9b3b994314159560c40feca90ae28448360a74b091b72f44489d",
+                    "EndpointID": "a1dbfdb4bd22db5312aa94b85f276c6b66facd1ba2bdcf9caa98f13fc087ef17",
+                    "Gateway": "172.20.0.1",
+                    "IPAddress": "172.20.0.3",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:14:00:03",
+                    "DriverOpts": {}
+                },
+                "FrontEnd": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": [
+                        "b4c103ba57a4"
+                    ],
+                    "NetworkID": "c4bbf839b933ddf49c050bfb646da8205c1b6072b6b242d31b6bb48390a67887",
+                    "EndpointID": "e7cb0e14bc53be4b0c918431f70ffa45609dbf8306914ff61984e8d3a6c737f1",
+                    "Gateway": "172.19.0.1",
+                    "IPAddress": "172.19.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:13:00:02",
+                    "DriverOpts": null
+                }
+            }
+        }
+    }
+]
+[node1] (local) root@192.168.0.8 ~
+$ docker exec mariadb01 bash
+[node1] (local) root@192.168.0.8 ~
+$ docker exec -it mariadb01 bash
+root@48f52c95c7e3:/# ifconfig
+bash: ifconfig: command not found
+root@48f52c95c7e3:/# ip add
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+7: eth0@if8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:ac:14:00:02 brd ff:ff:ff:ff:ff:ff
+    inet 172.20.0.2/16 brd 172.20.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+root@48f52c95c7e3:/# exit
+exit
+[node1] (local) root@192.168.0.8 ~
+$ 
